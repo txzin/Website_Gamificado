@@ -191,3 +191,10 @@ function gameLoop() {
   draw();
   if (gameRunning) requestAnimationFrame(gameLoop);
 }
+
+function backToMenu() {
+  document.getElementById("gameOver").classList.add("hidden");
+  document.getElementById("pongCanvas").classList.add("hidden");
+  document.getElementById("menu").classList.remove("hidden");
+  gameRunning = false;
+}

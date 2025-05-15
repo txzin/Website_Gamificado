@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pong Colorido</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Pong Neon</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>✨ Pong Colorido ✨</h1>
+  <h1 id="title">Pong Maluco</h1>
 
   <div id="menu">
     <button onclick="startGame('single')">Single Player</button>
@@ -15,10 +15,11 @@
   </div>
 
   <canvas id="pongCanvas" width="800" height="500" class="hidden"></canvas>
+  
 
   <div id="gameOver" class="hidden">
-    <p>Game Over!</p>
-    <button onclick="resetGame()">Reiniciar</button>
+    <h2>Game Over</h2>
+    <button onclick="backToMenu()">Reiniciar</button>
   </div>
 
   <script src="script.js"></script>
