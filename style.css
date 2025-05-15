@@ -2,11 +2,21 @@ body {
   margin: 0;
   background: black;
   overflow: hidden;
+  font-family: 'Courier New', monospace;
+  color: white;
+  text-align: center;
+}
+
+#titulo {
+  margin: 20px 0 10px;
+  font-size: 36px;
+  color: magenta;
+  text-shadow: 2px 2px cyan;
 }
 
 #pongCanvas {
   display: block;
-  margin: auto;
+  margin: 0 auto;
   background: #0b0b2e;
   border: 2px solid cyan;
 }
