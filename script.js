@@ -99,12 +99,10 @@ function startGame(selectedMode) {
 function update() {
   if (!gameRunning) return;
 
-  // Player 1
   if (wPressed) playerY -= paddleSpeed;
   if (sPressed) playerY += paddleSpeed;
   playerY = Math.max(0, Math.min(canvas.height - paddleHeight, playerY));
 
-  // Player 2 or AI
   if (mode === "multi") {
     if (upPressed) player2Y -= paddleSpeed;
     if (downPressed) player2Y += paddleSpeed;
@@ -115,35 +113,29 @@ function update() {
     else if (aiCenter > ballY + 35) aiY -= paddleSpeed;
   }
 
-  // Bola
   ballX += ballSpeedX;
   ballY += ballSpeedY;
 
-  // Curvinha
   if (Math.random() < 0.02) {
     ballSpeedY += (Math.random() - 0.5) * 2;
   }
 
-  // Bordas
   if (ballY < 0 || ballY > canvas.height) ballSpeedY = -ballSpeedY;
 
   const opponentY = mode === 'multi' ? player2Y : aiY;
 
-  // Colisão com Player
   if (ballX < 20 && ballY > playerY && ballY < playerY + paddleHeight) {
     ballSpeedX = -ballSpeedX * 1.05;
     ballSpeedY *= 1.05;
     ballColor = randomColor();
   }
 
-  // Colisão com oponente
   if (ballX > canvas.width - 20 && ballY > opponentY && ballY < opponentY + paddleHeight) {
     ballSpeedX = -ballSpeedX * 1.05;
     ballSpeedY *= 1.05;
     ballColor = randomColor();
   }
 
-  // Pontuação
   if (ballX < 0) {
     aiScore++;
     resetBall();
@@ -154,13 +146,11 @@ function update() {
     resetBall();
   }
 
-  // Fim de jogo
   if (playerScore === 5 || aiScore === 5) {
     gameRunning = false;
     document.getElementById("gameOver").classList.remove("hidden");
   }
 
-  // Trilha
   ballTrail.push({ x: ballX, y: ballY, color: ballColor });
   if (ballTrail.length > 15) ballTrail.shift();
 }
@@ -168,7 +158,6 @@ function update() {
 function draw() {
   drawRect(0, 0, canvas.width, canvas.height, '#0b0b2e');
 
-  // Trilha
   for (let i = 0; i < ballTrail.length; i++) {
     const trail = ballTrail[i];
     drawCircle(trail.x, trail.y, ballSize, trail.color, i / ballTrail.length / 2);
