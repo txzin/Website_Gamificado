@@ -172,7 +172,7 @@ function update() {
     triggerFlashbang();
   }
 
-  // Verifica fim de jogo
+
   if (playerScore === 5 || aiScore === 5) {
     gameRunning = false;
     document.getElementById("gameOver").classList.remove("hidden");
