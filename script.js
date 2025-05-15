@@ -19,6 +19,9 @@ let upPressed = false;
 let downPressed = false;
 let gameRunning = true;
 
+let ballColor = 'white';
+let particles = [];
+
 document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowUp') upPressed = true;
   if (e.key === 'ArrowDown') downPressed = true;
@@ -57,6 +60,7 @@ function resetBall() {
   ballY = canvas.height / 2;
   ballSpeedX = 5 * (Math.random() > 0.5 ? 1 : -1);
   ballSpeedY = 5 * (Math.random() > 0.5 ? 1 : -1);
+  ballColor = 'white';
 }
 
 function resetGame() {
@@ -70,6 +74,36 @@ function resetGame() {
   requestAnimationFrame(gameLoop);
 }
 
+function createParticles(x, y, color) {
+  for (let i = 0; i < 10; i++) {
+    particles.push({
+      x,
+      y,
+      dx: (Math.random() - 0.5) * 6,
+      dy: (Math.random() - 0.5) * 6,
+      life: 30,
+      color
+    });
+  }
+}
+
+function updateParticles() {
+  particles.forEach(p => {
+    p.x += p.dx;
+    p.y += p.dy;
+    p.life--;
+  });
+  particles = particles.filter(p => p.life > 0);
+}
+
+function drawParticles() {
+  particles.forEach(p => {
+    ctx.globalAlpha = p.life / 30;
+    drawCircle(p.x, p.y, 3, p.color);
+  });
+  ctx.globalAlpha = 1.0;
+}
+
 function update() {
   if (!gameRunning) return;
 
@@ -81,22 +115,29 @@ function update() {
   ballX += ballSpeedX;
   ballY += ballSpeedY;
 
-  if (ballY < 0 || ballY > canvas.height) ballSpeedY = -ballSpeedY;
+  if (ballY < 0 || ballY > canvas.height) {
+    ballSpeedY = -ballSpeedY;
+    createParticles(ballX, ballY, ballColor);
+  }
 
   const aiCenter = aiY + paddleHeight / 2;
   if (aiCenter < ballY - 35) aiY += paddleSpeed;
   else if (aiCenter > ballY + 35) aiY -= paddleSpeed;
 
+  // Colisão com jogador
   if (ballX < 20 && ballY > playerY && ballY < playerY + paddleHeight) {
     ballSpeedX = -ballSpeedX * 1.1;
     ballSpeedY *= 1.1;
     ballColor = randomColor();
+    createParticles(ballX, ballY, ballColor);
   }
 
+  // Colisão com IA
   if (ballX > canvas.width - 20 && ballY > aiY && ballY < aiY + paddleHeight) {
     ballSpeedX = -ballSpeedX * 1.1;
     ballSpeedY *= 1.1;
     ballColor = randomColor();
+    createParticles(ballX, ballY, ballColor);
   }
 
   if (ballX < 0) {
@@ -113,15 +154,16 @@ function update() {
     gameRunning = false;
     document.getElementById("gameOver").classList.remove("hidden");
   }
-}
 
-let ballColor = 'white';
+  updateParticles();
+}
 
 function draw() {
   drawRect(0, 0, canvas.width, canvas.height, '#0b0b2e');
   drawRect(10, playerY, paddleWidth, paddleHeight, 'lime');
   drawRect(canvas.width - 20, aiY, paddleWidth, paddleHeight, 'magenta');
   drawCircle(ballX, ballY, ballSize, ballColor);
+  drawParticles();
   drawText(`${playerScore}   |   ${aiScore}`, canvas.width / 2, 40);
 }
 

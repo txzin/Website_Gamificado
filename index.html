@@ -1,17 +1,15 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cosmic Bounce</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Pong Colorido</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Cosmic Bounce</h1>
-  <canvas id="pongCanvas" width="800" height="500"></canvas>
+  <canvas id="pongCanvas" width="800" height="600"></canvas>
   <div id="gameOver" class="hidden">
-    <h2>Game Over</h2>
-    <button onclick="resetGame()">Jogar Novamente</button>
+    <p>Game Over!</p>
+    <button onclick="resetGame()">Reiniciar</button>
   </div>
   <script src="script.js"></script>
 </body>
