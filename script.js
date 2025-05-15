@@ -1,8 +1,7 @@
 const canvas = document.getElementById('pongCanvas');
 const ctx = canvas.getContext('2d');
 
-// Áudio
-const bgMusic = new Audio('sounds/bg_sound.mp3');
+const bgMusic = new Audio('sounds/bg_music.mp3');
 bgMusic.loop = true;
 bgMusic.volume = 0.3;
 
