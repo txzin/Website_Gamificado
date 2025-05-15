@@ -28,11 +28,16 @@ let ballTrail = [];
 
 let ballColor = 'white';
 
+let flashActive = false;
+let flashTimer = 0;
+let shakeOffsetX = 0;
+let shakeOffsetY = 0;
+
 document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowUp') upPressed = true;
   if (e.key === 'ArrowDown') downPressed = true;
   if (e.key === 'w') wPressed = true;
-  if (e.key === 's') sPressed = true;
+  if (e.key === 's') sPressed = true;  // <-- Corrigido aqui
 });
 
 document.addEventListener('keyup', (e) => {
@@ -63,9 +68,9 @@ function drawText(text, x, y) {
   ctx.fillText(text, x, y);
 }
 
-function randomColor() {
-  const colors = ['cyan', 'magenta', 'yellow', 'lime', 'white'];
-  return colors[Math.floor(Math.random() * colors.length)];
+function triggerFlashbang() {
+  flashActive = true;
+  flashTimer = 30; // dura 30 frames
 }
 
 function resetBall() {
@@ -96,9 +101,15 @@ function startGame(selectedMode) {
   resetGame();
 }
 
+function randomColor() {
+  const colors = ['cyan', 'magenta', 'yellow', 'lime', 'white'];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
+
 function update() {
   if (!gameRunning) return;
 
+  // Controle do jogador (pivot esquerdo)
   if (wPressed) playerY -= paddleSpeed;
   if (sPressed) playerY += paddleSpeed;
   playerY = Math.max(0, Math.min(canvas.height - paddleHeight, playerY));
@@ -139,11 +150,13 @@ function update() {
   if (ballX < 0) {
     aiScore++;
     resetBall();
+    triggerFlashbang();
   }
 
   if (ballX > canvas.width) {
     playerScore++;
     resetBall();
+    triggerFlashbang();
   }
 
   if (playerScore === 5 || aiScore === 5) {
@@ -151,11 +164,33 @@ function update() {
     document.getElementById("gameOver").classList.remove("hidden");
   }
 
+  if (flashActive) {
+    flashTimer--;
+    if (flashTimer <= 0) {
+      flashActive = false;
+    } else {
+      shakeOffsetX = Math.random() * 20 - 10;
+      shakeOffsetY = Math.random() * 20 - 10;
+    }
+  } else {
+    shakeOffsetX = 0;
+    shakeOffsetY = 0;
+  }
+
   ballTrail.push({ x: ballX, y: ballY, color: ballColor });
   if (ballTrail.length > 15) ballTrail.shift();
 }
 
 function draw() {
+  ctx.save();
+  ctx.translate(shakeOffsetX, shakeOffsetY);
+
+  if (flashActive) {
+    drawRect(0, 0, canvas.width, canvas.height, 'cyan');
+    ctx.restore();
+    return;
+  }
+
   drawRect(0, 0, canvas.width, canvas.height, '#0b0b2e');
 
   for (let i = 0; i < ballTrail.length; i++) {
@@ -173,6 +208,8 @@ function draw() {
 
   drawCircle(ballX, ballY, ballSize, ballColor);
   drawText(`${playerScore}   |   ${aiScore}`, canvas.width / 2, 40);
+
+  ctx.restore();
 }
 
 function gameLoop() {
