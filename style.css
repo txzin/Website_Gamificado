@@ -1,56 +1,41 @@
 body {
-  margin: 0;
-  background: black;
-  overflow: hidden;
-  font-family: 'Courier New', monospace;
-  color: white;
   text-align: center;
+  font-family: 'Courier New', monospace;
+  background-color: #ffffff;
+  margin: 0;
+  padding: 20px;
 }
 
-#titulo {
-  margin: 20px 0 10px;
-  font-size: 36px;
-  color: magenta;
-  text-shadow: 2px 2px cyan;
+h1 {
+  margin-bottom: 10px;
 }
 
-#pongCanvas {
+#menu {
+  margin: 20px;
+}
+
+button {
+  font-family: inherit;
+  padding: 10px 20px;
+  margin: 5px;
+  background-color: cyan;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+canvas {
+  background-color: #0b0b2e;
   display: block;
   margin: 0 auto;
-  background: #0b0b2e;
-  border: 2px solid cyan;
-}
-
-#gameOver {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.9);
-  padding: 40px;
-  color: white;
-  text-align: center;
-  font-family: 'Courier New', monospace;
-  font-size: 24px;
-  border: 2px solid cyan;
-  border-radius: 12px;
+  border-radius: 10px;
 }
 
 .hidden {
   display: none;
 }
 
-button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background: cyan;
-  border: none;
-  color: black;
-  font-weight: bold;
-  cursor: pointer;
-  font-family: 'Courier New', monospace;
-}
-
-button:hover {
-  background: magenta;
+#gameOver {
+  margin-top: 10px;
 }
