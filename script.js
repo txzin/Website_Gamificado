@@ -37,7 +37,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowUp') upPressed = true;
   if (e.key === 'ArrowDown') downPressed = true;
   if (e.key === 'w') wPressed = true;
-  if (e.key === 's') sPressed = true;  // <-- Corrigido aqui
+  if (e.key === 's') sPressed = true;  
 });
 
 document.addEventListener('keyup', (e) => {
@@ -70,7 +70,7 @@ function drawText(text, x, y) {
 
 function triggerFlashbang() {
   flashActive = true;
-  flashTimer = 30; // dura 30 frames
+  flashTimer = 30; 
 }
 
 function resetBall() {
@@ -109,7 +109,6 @@ function randomColor() {
 function update() {
   if (!gameRunning) return;
 
-  // Controle do jogador (pivot esquerdo)
   if (wPressed) playerY -= paddleSpeed;
   if (sPressed) playerY += paddleSpeed;
   playerY = Math.max(0, Math.min(canvas.height - paddleHeight, playerY));
