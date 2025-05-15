@@ -4,7 +4,7 @@ const ctx = canvas.getContext('2d');
 const paddleWidth = 10, paddleHeight = 100;
 let playerY = canvas.height / 2 - paddleHeight / 2;
 let aiY = canvas.height / 2 - paddleHeight / 2;
-const paddleSpeed = 5;
+const paddleSpeed = 6;
 
 let ballX = canvas.width / 2;
 let ballY = canvas.height / 2;
@@ -17,28 +17,15 @@ let aiScore = 0;
 
 let upPressed = false;
 let downPressed = false;
-
-let gameOver = false;
+let gameRunning = true;
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowUp') upPressed = true;
   if (e.key === 'ArrowDown') downPressed = true;
 });
-
 document.addEventListener('keyup', (e) => {
   if (e.key === 'ArrowUp') upPressed = false;
   if (e.key === 'ArrowDown') downPressed = false;
-});
-
-canvas.addEventListener('click', () => {
-  if (gameOver) {
-    playerScore = 0;
-    aiScore = 0;
-    playerY = canvas.height / 2 - paddleHeight / 2;
-    aiY = canvas.height / 2 - paddleHeight / 2;
-    resetBall();
-    gameOver = false;
-  }
 });
 
 function drawRect(x, y, w, h, color) {
@@ -49,16 +36,20 @@ function drawRect(x, y, w, h, color) {
 function drawCircle(x, y, r, color) {
   ctx.fillStyle = color;
   ctx.beginPath();
-  ctx.arc(x, y, r, 0, Math.PI * 2, false);
-  ctx.closePath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
   ctx.fill();
 }
 
 function drawText(text, x, y) {
-  ctx.fillStyle = 'white';
-  ctx.font = '32px Arial';
+  ctx.fillStyle = 'cyan';
+  ctx.font = '32px Courier New';
   ctx.textAlign = 'center';
   ctx.fillText(text, x, y);
+}
+
+function randomColor() {
+  const colors = ['cyan', 'magenta', 'yellow', 'lime', 'white'];
+  return colors[Math.floor(Math.random() * colors.length)];
 }
 
 function resetBall() {
@@ -68,14 +59,24 @@ function resetBall() {
   ballSpeedY = 5 * (Math.random() > 0.5 ? 1 : -1);
 }
 
+function resetGame() {
+  playerScore = 0;
+  aiScore = 0;
+  playerY = canvas.height / 2 - paddleHeight / 2;
+  aiY = canvas.height / 2 - paddleHeight / 2;
+  resetBall();
+  document.getElementById("gameOver").classList.add("hidden");
+  gameRunning = true;
+  requestAnimationFrame(gameLoop);
+}
+
 function update() {
-  if (gameOver) return;
+  if (!gameRunning) return;
 
   if (upPressed) playerY -= paddleSpeed;
   if (downPressed) playerY += paddleSpeed;
 
-  if (playerY < 0) playerY = 0;
-  if (playerY + paddleHeight > canvas.height) playerY = canvas.height - paddleHeight;
+  playerY = Math.max(0, Math.min(canvas.height - paddleHeight, playerY));
 
   ballX += ballSpeedX;
   ballY += ballSpeedY;
@@ -86,22 +87,16 @@ function update() {
   if (aiCenter < ballY - 35) aiY += paddleSpeed;
   else if (aiCenter > ballY + 35) aiY -= paddleSpeed;
 
-  if (
-    ballX < 20 &&
-    ballY > playerY &&
-    ballY < playerY + paddleHeight
-  ) {
-    ballSpeedX = -ballSpeedX * 1.05;
-    ballSpeedY *= 1.05;
+  if (ballX < 20 && ballY > playerY && ballY < playerY + paddleHeight) {
+    ballSpeedX = -ballSpeedX * 1.1;
+    ballSpeedY *= 1.1;
+    ballColor = randomColor();
   }
 
-  if (
-    ballX > canvas.width - 20 &&
-    ballY > aiY &&
-    ballY < aiY + paddleHeight
-  ) {
-    ballSpeedX = -ballSpeedX * 1.05;
-    ballSpeedY *= 1.05;
+  if (ballX > canvas.width - 20 && ballY > aiY && ballY < aiY + paddleHeight) {
+    ballSpeedX = -ballSpeedX * 1.1;
+    ballSpeedY *= 1.1;
+    ballColor = randomColor();
   }
 
   if (ballX < 0) {
@@ -114,32 +109,25 @@ function update() {
     resetBall();
   }
 
-  if (playerScore >= 5 || aiScore >= 5) {
-    gameOver = true;
+  if (playerScore === 5 || aiScore === 5) {
+    gameRunning = false;
+    document.getElementById("gameOver").classList.remove("hidden");
   }
 }
 
+let ballColor = 'white';
+
 function draw() {
-  drawRect(0, 0, canvas.width, canvas.height, '#000');
-
-  if (gameOver) {
-    drawText("Game Over", canvas.width / 2, canvas.height / 2 - 40);
-    drawText("Clique para jogar novamente", canvas.width / 2, canvas.height / 2 + 20);
-    return;
-  }
-
-  drawRect(10, playerY, paddleWidth, paddleHeight, 'red');
-  drawRect(canvas.width - 20, aiY, paddleWidth, paddleHeight, 'white');
-
-  drawCircle(ballX, ballY, ballSize, 'white');
-
+  drawRect(0, 0, canvas.width, canvas.height, '#0b0b2e');
+  drawRect(10, playerY, paddleWidth, paddleHeight, 'lime');
+  drawRect(canvas.width - 20, aiY, paddleWidth, paddleHeight, 'magenta');
+  drawCircle(ballX, ballY, ballSize, ballColor);
   drawText(`${playerScore}   |   ${aiScore}`, canvas.width / 2, 40);
 }
 
 function gameLoop() {
   update();
   draw();
-  requestAnimationFrame(gameLoop);
+  if (gameRunning) requestAnimationFrame(gameLoop);
 }
-
 gameLoop();

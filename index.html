@@ -3,12 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mini Jogo Pong</title>
+  <title>Cosmic Bounce</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Jogo Pong</h1>
+  <h1>Cosmic Bounce</h1>
   <canvas id="pongCanvas" width="800" height="500"></canvas>
+  <div id="gameOver" class="hidden">
+    <h2>Game Over</h2>
+    <button onclick="resetGame()">Jogar Novamente</button>
+  </div>
   <script src="script.js"></script>
 </body>
 </html>

@@ -1,14 +1,36 @@
 body {
-    text-align: center;
-    background-color: #111;
-    color: white;
-    font-family: Arial, sans-serif;
-  }
-  
-  canvas {
-    background-color: #000;
-    border: 3px solid white;
-    display: block;
-    margin: 0 auto;
-  }
-  
+  text-align: center;
+  background: radial-gradient(circle, #000022, #000);
+  color: white;
+  font-family: 'Courier New', monospace;
+}
+
+canvas {
+  background-color: #0b0b2e;
+  border: 3px solid cyan;
+  display: block;
+  margin: 0 auto;
+  box-shadow: 0 0 15px cyan;
+}
+
+#gameOver {
+  margin-top: 20px;
+}
+
+.hidden {
+  display: none;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 18px;
+  background: cyan;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #000;
+}
+
+button:hover {
+  background: #00ffff;
+}
