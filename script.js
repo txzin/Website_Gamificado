@@ -1,6 +1,15 @@
 const canvas = document.getElementById('pongCanvas');
 const ctx = canvas.getContext('2d');
 
+// Áudio
+const bgMusic = new Audio('sounds/bg_sound.mp3');
+bgMusic.loop = true;
+bgMusic.volume = 0.3;
+
+const hitSound = new Audio('sounds/hit.mp3');
+const flashSound = new Audio('sounds/flashbang.mp3');
+const winSound = new Audio('sounds/win.mp3');
+
 const paddleWidth = 10, paddleHeight = 100;
 let playerY = canvas.height / 2 - paddleHeight / 2;
 let aiY = canvas.height / 2 - paddleHeight / 2;
@@ -25,7 +34,6 @@ let sPressed = false;
 let gameRunning = false;
 let mode = "single";
 let ballTrail = [];
-
 let ballColor = 'white';
 
 let flashActive = false;
@@ -37,7 +45,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowUp') upPressed = true;
   if (e.key === 'ArrowDown') downPressed = true;
   if (e.key === 'w') wPressed = true;
-  if (e.key === 's') sPressed = true;  
+  if (e.key === 's') sPressed = true;
 });
 
 document.addEventListener('keyup', (e) => {
@@ -70,7 +78,8 @@ function drawText(text, x, y) {
 
 function triggerFlashbang() {
   flashActive = true;
-  flashTimer = 30; 
+  flashTimer = 30;
+  flashSound.play();
 }
 
 function resetBall() {
@@ -91,6 +100,7 @@ function resetGame() {
   resetBall();
   document.getElementById("gameOver").classList.add("hidden");
   gameRunning = true;
+  bgMusic.play();
   requestAnimationFrame(gameLoop);
 }
 
@@ -130,7 +140,10 @@ function update() {
     ballSpeedY += (Math.random() - 0.5) * 2;
   }
 
-  if (ballY < 0 || ballY > canvas.height) ballSpeedY = -ballSpeedY;
+  if (ballY < 0 || ballY > canvas.height) {
+    ballSpeedY = -ballSpeedY;
+    hitSound.play();
+  }
 
   const opponentY = mode === 'multi' ? player2Y : aiY;
 
@@ -138,12 +151,14 @@ function update() {
     ballSpeedX = -ballSpeedX * 1.05;
     ballSpeedY *= 1.05;
     ballColor = randomColor();
+    hitSound.play();
   }
 
   if (ballX > canvas.width - 20 && ballY > opponentY && ballY < opponentY + paddleHeight) {
     ballSpeedX = -ballSpeedX * 1.05;
     ballSpeedY *= 1.05;
     ballColor = randomColor();
+    hitSound.play();
   }
 
   if (ballX < 0) {
@@ -158,9 +173,12 @@ function update() {
     triggerFlashbang();
   }
 
+  // Verifica fim de jogo
   if (playerScore === 5 || aiScore === 5) {
     gameRunning = false;
     document.getElementById("gameOver").classList.remove("hidden");
+    winSound.play();
+    bgMusic.pause();
   }
 
   if (flashActive) {
@@ -222,4 +240,6 @@ function backToMenu() {
   document.getElementById("pongCanvas").classList.add("hidden");
   document.getElementById("menu").classList.remove("hidden");
   gameRunning = false;
+  bgMusic.pause();
+  bgMusic.currentTime = 0;
 }
